@@ -4,13 +4,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	_ "image/gif"
 	_ "image/jpeg"
 	"os"
 
-	"github.com/otiai10/amesh/cli"
-	"github.com/otiai10/amesh/lib/tenki"
+	// _ "image/png"
+	// _ "image/gif"
+
 	"github.com/otiai10/gat/render"
+	"github.com/otiai10/tenki/cli"
+	"github.com/otiai10/tenki/tenki"
 )
 
 const version = "v1.2.3"
@@ -19,6 +21,9 @@ var (
 	geo, mask bool
 	usepix    bool
 	scale     float64
+
+	// debug
+	// verbose bool
 
 	// 以下、タイムラプスでのみ有効
 	lapse   bool
@@ -36,8 +41,9 @@ func setup() {
 	flag.BoolVar(&mask, "b", true, "県境を描画")
 	flag.BoolVar(&usepix, "p", false, "iTermであってもピクセル画で表示")
 	flag.Float64Var(&scale, "s", 1.2, "表示拡大倍率")
+	// flag.BoolVar(&verbose, "v", false, "デバッグログ表示")
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "東京アメッシュをCLIに表示するコマンドです。(%v)\n利用可能なオプション:\n", version)
+		fmt.Fprintf(os.Stderr, "tenki.jpをCLIに表示するコマンドです。(%v)\n利用可能なオプション:\n", version)
 		flag.PrintDefaults()
 	}
 	flag.Parse()
@@ -52,16 +58,17 @@ func main() {
 		renderer = &render.CellGrid{}
 	}
 	renderer.SetScale(scale)
-	subcommand := flag.Arg(0)
-	switch loc := tenki.GetLocation(subcommand); {
-	case loc != nil:
-		onerror(cli.Tenki(renderer, loc))
-	case subcommand == "typhoon":
-		onerror(cli.Typhoon(renderer))
-	case lapse:
-		onerror(cli.Timelapse(renderer, minutes, delay, loop))
-	default:
-		onerror(cli.Amesh(renderer, geo, mask))
+	areaname := flag.Arg(0)
+	if areaname == "" {
+		areaname = "japan"
+	}
+	area, err := tenki.GetArea(areaname)
+	onerror(err)
+
+	if lapse {
+		onerror(cli.Timelapse(renderer, area, minutes, delay, loop))
+	} else {
+		onerror(cli.Tenki(renderer, area))
 	}
 }
 
