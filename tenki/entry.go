@@ -15,7 +15,7 @@ const (
 )
 
 func TruncateTime(t time.Time, unit time.Duration) time.Time {
-	return t.Add(-1 * unit).Round(1 * unit)
+	return t.Add(-2 * unit).Round(1 * unit)
 }
 
 type Area struct {
