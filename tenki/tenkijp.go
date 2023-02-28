@@ -1,6 +1,20 @@
 package tenki
 
+func ListAreas() (names []string) {
+	for k := range area {
+		names = append(names, k)
+	}
+	return names
+}
+
 var area = map[string]string{
-	"japan": "/japan-detail-large.jpg",
-	"osaka": "/pref-30-large.jpg",
+	"japan":     "/japan-detail-large.jpg",
+	"sapporo":   "/pref-4-large.jpg",
+	"sendai":    "/pref-7-large.jpg",
+	"tokyo":     "/pref-16-large.jpg",
+	"shizuoka":  "/pref-25-large.jpg",
+	"nagoya":    "/pref-26-large.jpg",
+	"osaka":     "/pref-30-large.jpg",
+	"hiroshima": "/pref-37-large.jpg",
+	"fukuoka":   "/pref-43-large.jpg",
 }

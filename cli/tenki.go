@@ -10,22 +10,13 @@ import (
 	"github.com/otiai10/tenki/tenki"
 )
 
-type snapshot struct {
-	Image *image.RGBA
-	Time  time.Time
-}
-
-var (
-	unit time.Duration = 5 * time.Minute
-)
-
 // Tenki
 func Tenki(r render.Renderer, area tenki.Area) error {
-	t, err := getNow()
+	t, err := tenki.GetNow()
 	if err != nil {
 		return err
 	}
-	t = tenki.TruncateTime(t, unit)
+	t = tenki.TruncateTime(t, tenki.Unit)
 	entry := area.GetEntry(t)
 	if err != nil {
 		return err
@@ -46,18 +37,18 @@ func Timelapse(r render.Renderer, area tenki.Area, minutes, delay int, loop bool
 
 	fmt.Printf("直近%d分間の降雨画像を取得中", minutes)
 
-	now, err := getNow()
+	now, err := tenki.GetNow()
 	if err != nil {
 		return err
 	}
 
-	start := tenki.TruncateTime(now.Add(time.Duration(-1*minutes)*time.Minute), unit)
+	start := tenki.TruncateTime(now.Add(time.Duration(-1*minutes)*time.Minute), tenki.Unit)
 	end := now
 
-	t := tenki.TruncateTime(start, unit)
+	t := tenki.TruncateTime(start, tenki.Unit)
 	var entries []tenki.Entry
 	entries = append(entries, area.GetEntry(t))
-	for t := t.Add(unit); t.Before(end); t = t.Add(unit) {
+	for t := t.Add(tenki.Unit); t.Before(end); t = t.Add(tenki.Unit) {
 		entries = append(entries, area.GetEntry(t))
 	}
 

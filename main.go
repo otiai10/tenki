@@ -30,6 +30,9 @@ var (
 	minutes int
 	delay   int
 	loop    bool
+
+	// リストモード
+	list bool
 )
 
 func setup() {
@@ -41,6 +44,7 @@ func setup() {
 	flag.BoolVar(&mask, "b", true, "県境を描画")
 	flag.BoolVar(&usepix, "p", false, "iTermであってもピクセル画で表示")
 	flag.Float64Var(&scale, "s", 1.2, "表示拡大倍率")
+	flag.BoolVar(&list, "list", false, "サポートしている地域を一覧")
 	// flag.BoolVar(&verbose, "v", false, "デバッグログ表示")
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "tenki.jpをCLIに表示するコマンドです。(%v)\n利用可能なオプション:\n", version)
@@ -52,6 +56,11 @@ func setup() {
 func main() {
 
 	setup()
+
+	if list {
+		onerror(cli.List())
+		return
+	}
 
 	renderer := render.GetDefaultRenderer()
 	if usepix {
