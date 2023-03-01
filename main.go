@@ -17,7 +17,7 @@ import (
 	"github.com/otiai10/tenki/tenki"
 )
 
-const version = "v1.2.3"
+const version = "v1.4.2"
 
 //go:embed area.json
 var data []byte
