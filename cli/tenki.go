@@ -41,11 +41,11 @@ func Timelapse(r render.Renderer, area tenki.Area, minutes, delay int, loop bool
 	if err != nil {
 		return err
 	}
+	now = tenki.TruncateTime(now, tenki.Unit)
 
-	start := tenki.TruncateTime(now.Add(time.Duration(-1*minutes)*time.Minute), tenki.Unit)
+	t := now.Add(time.Duration(-1*minutes) * time.Minute)
 	end := now
 
-	t := tenki.TruncateTime(start, tenki.Unit)
 	var entries []tenki.Entry
 	entries = append(entries, area.GetEntry(t))
 	for t := t.Add(tenki.Unit); t.Before(end); t = t.Add(tenki.Unit) {
@@ -55,16 +55,14 @@ func Timelapse(r render.Renderer, area tenki.Area, minutes, delay int, loop bool
 	progress := func(i int) { fmt.Print(".") }
 
 	// images := make([]*image.RGBA, len(entries), len(entries))
-	images := make([]image.Image, len(entries), len(entries))
+	images := make([]image.Image, len(entries))
 	for i, entry := range entries {
 		img, err := entry.Image()
 		if err != nil {
 			return err
 		}
 		images[i] = img
-		if progress != nil {
-			progress(i)
-		}
+		progress(i)
 	}
 
 	// まずクリアする
