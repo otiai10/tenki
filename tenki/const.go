@@ -1,6 +1,9 @@
 package tenki
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 var (
 	Unit time.Duration = 5 * time.Minute
@@ -16,4 +19,17 @@ func GetNow() (time.Time, error) {
 		return time.Time{}, err
 	}
 	return time.Now().In(location), nil
+}
+
+func ListAreas() (names []string) {
+	for k := range area {
+		names = append(names, k)
+	}
+	return names
+}
+
+var area = map[string]string{}
+
+func Load(jsonlike []byte) error {
+	return json.Unmarshal(jsonlike, &area)
 }

@@ -10,12 +10,17 @@ import (
 	// _ "image/png"
 	// _ "image/gif"
 
+	_ "embed"
+
 	"github.com/otiai10/gat/render"
 	"github.com/otiai10/tenki/cli"
 	"github.com/otiai10/tenki/tenki"
 )
 
 const version = "v1.2.3"
+
+//go:embed area.json
+var data []byte
 
 var (
 	geo, mask bool
@@ -56,6 +61,8 @@ func setup() {
 func main() {
 
 	setup()
+
+	onerror(tenki.Load(data))
 
 	if list {
 		onerror(cli.List())
